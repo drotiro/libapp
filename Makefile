@@ -22,7 +22,8 @@ clean:
 	rm -f $(SONAME).$(VER) *.o apptest
 
 install: $(SONAME)
-	cp $(SONAME).$(VER) $(PREFIX)/lib
+	install -s $(SONAME).$(VER) $(PREFIX)/lib
+	install -m 644 -t $(PREFIX)/include/libapp app.h
 	@echo "*** Note: you should probably run 'ldconfig'"
 
 apptest: libapp.so apptest.o
