@@ -1,0 +1,3 @@
+*.o
+libapp.so*
+apptest
