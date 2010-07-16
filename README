@@ -1,5 +1,5 @@
 	libapp: utilities for repetitive tasks in app development
-	=============================================================
+	=========================================================
 
 libapp provides functions to easily perform some often needed
 operations in application development, such as command line parsing.

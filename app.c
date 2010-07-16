@@ -108,7 +108,7 @@ void app_opt_on_error(app* theapp, app_callback error_handler)
 
 void app_opt_default_error_handler(app* this, const char* theopt)
 {
-	fprintf(stderr, "Invalid option '%s'\n\n", theopt);
+	fprintf(stderr, "Wrong or invalid option '%s'\n\n", theopt);
 	app_auto_help(this, theopt);
 }
 
@@ -118,7 +118,7 @@ app_callback app_help = &app_auto_help;
 void app_arg_required(app* this, const char * theopt)
 {
 	fprintf(stderr, "Option '%s' requires an argument\n", theopt);
-	app_auto_help(this, theopt);
+	this->on_error ? this->on_error(this, theopt) : app_auto_help(this, theopt);
 }
 
 void app_wipe(char * opt)
@@ -137,7 +137,7 @@ bool    app_parse_opts(app * theapp, int argc, char* argv[])
 	theapp->program_name = basename(strdup(argv[0]));
 	while( i < argc ) {
 		//go to next opt, if not there
-		while( argv[i][0] != '-' && i < argc) ++i;
+		while( i < argc && argv[i][0] != '-' ) ++i;
 		if( i >= argc ) break;
 		last_opt = i;
 		
@@ -220,4 +220,10 @@ char * app_term_askpass(const char * what)
   app_term_set_echo(1);
   printf("\n");
   return val;
+}
+
+const char * app_get_program_name(app * theapp)
+{
+	if(!theapp) return NULL;
+	return theapp->program_name;
 }
