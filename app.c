@@ -148,7 +148,7 @@ bool    app_parse_opts(app * theapp, int argc, char* argv[])
 		found = false; pos = 0;
 		while(pos < theapp->pos && ! found) {
 			found = ( is_short ? 
-				theapp->options[pos]->short_name == argv[i][1] :
+				theapp->options[pos]->short_name == argv[i][1] && !argv[i][2] :
 				theapp->options[pos]->long_name && !strcmp(theapp->options[pos]->long_name, argv[i]+2)
 			);
 			if(!found) ++pos;
