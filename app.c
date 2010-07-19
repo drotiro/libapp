@@ -62,7 +62,7 @@ app * app_new()
 void app_free(app *this)
 {
 	if(!this) return;
-	if(this->options) free(this->options);
+	free(this->options);
 	free(this);
 }
 
@@ -178,11 +178,14 @@ bool app_parse_opts(app * theapp, int argc, char* argv[])
 {
 	int i=1, last_opt=0, pos;
 	bool found;
+	char * tmpn;
 	opt * curopt;
 	app_callback cb;
 	
 	if(!argv) return false;
-	theapp->program_name = basename(strdup(argv[0]));
+	tmpn = strdup(argv[0]);
+	theapp->program_name = basename(tmpn);
+	free(tmpn);
 	while( i < argc ) {
 		//go to next opt, if not there
 		while( i < argc && argv[i][0] != '-' ) ++i;

@@ -26,5 +26,8 @@ install: $(SONAME)
 	install -m 644 -t $(PREFIX)/include/libapp app.h
 	@echo "*** Note: you should probably run 'ldconfig'"
 
+install_debug: $(SONAME)
+	install $(SONAME).$(VER) $(PREFIX)/lib
+
 apptest: libapp.so apptest.o
 	gcc $(CFLAGS) -o $@ apptest.o  -lapp
