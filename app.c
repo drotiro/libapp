@@ -7,6 +7,8 @@
 
 const static int START_LEN = 10, LINESIZE = 1024;
 const static char  COMMENT_START[] = "#;", SEPARATOR[] = "=";
+const static char * YES[] = { "YES", "ON", "TRUE", NULL },
+				* NO[] = { "NO", "OFF", "FALSE", NULL };
 
 struct app_t {
 	char * program_name;
@@ -140,7 +142,7 @@ void app_opt_on_error(app* theapp, app_callback error_handler)
 
 void app_opt_default_error_handler(app* this, const char* theopt)
 {
-	fprintf(stderr, "Wrong or invalid option '%s'\n\n", theopt);
+	fprintf(stderr, "ERROR: Wrong or invalid option '%s'\n\n", theopt);
 	app_auto_help(this, theopt);
 }
 
@@ -149,8 +151,13 @@ app_callback app_help = &app_auto_help;
 
 void app_arg_required(app* this, const char * theopt)
 {
-	fprintf(stderr, "Option '%s' requires an argument\n", theopt);
+	fprintf(stderr, "ERROR: Option '%s' requires an argument\n", theopt);
 	this->on_error ? this->on_error(this, theopt) : app_auto_help(this, theopt);
+}
+
+void app_bad_value(app* this, const char * thekey, const char * theval)
+{
+	fprintf(stderr, "ERROR: Bad value '%s' for configuration key '%s'\n", theval, thekey);
 }
 
 void app_wipe(char * opt)
@@ -251,6 +258,32 @@ void app_split_line(char * line, char **key, char **val)
 	*val = strtok_r(NULL, SEPARATOR, &tms); trim(*val);
 }
 
+void strtoupper(char * str)
+{
+	int i, len = strlen(str);
+	for(i=0; i<len; ++i) str[i]=toupper(str[i]);
+}
+
+bool is_true(const char * val)
+{
+	int i = 0, found = false;
+	while ( YES[i] && ! found ) {
+		if (!strcmp(YES[i],val)) found=true;
+		else ++i;
+	}
+	return found;
+}
+
+bool is_false(const char * val)
+{
+	int i = 0, found = false;
+	while ( NO[i] && ! found ) {
+		if (!strcmp(NO[i],val)) found=true;
+		else ++i;
+	}
+	return found;
+}
+
 bool app_parse_opts_from(app * theapp, FILE * file)
 {
 	int i=1, last_opt=0, pos;
@@ -283,7 +316,20 @@ bool app_parse_opts_from(app * theapp, FILE * file)
 		}
 		switch(curopt->type) {
 			case OPT_FLAG: 
-				*(bool*)curopt->val = true;
+				// passing a value is optional, but if you do it
+				// you must use one of the allowed values
+				if ( !val ) { 
+					*(bool*)curopt->val = true;
+					break;
+				}
+				strtoupper(val);
+				if(is_true(val)) *(bool*)curopt->val = true;
+				else if(is_false(val)) *(bool*)curopt->val = false;
+				else {
+					app_bad_value(theapp, key, val);
+					free(line);
+					return false;
+				}
 				break;
 			case OPT_INT:
 				if(!val) {

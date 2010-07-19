@@ -55,8 +55,12 @@ void main(int argc, char* argv[])
 		fprintf(stderr, "ERROR: Can't stat file %s\n", str);
 	} else {
 		config = fopen(str, "r");
-		app_parse_opts_from(theapp, config);
+		res = app_parse_opts_from(theapp, config);
 		fclose(config);
+		if(!res) {
+			printf("doh!\n");
+			exit(1);
+		}
 	}
 	
 	printf("options: %d, %d, %d, %d, %d\n", 
