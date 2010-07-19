@@ -2,11 +2,11 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 #include <libgen.h>
 #include <termios.h>
 
-const static int START_LEN = 10;
+const static int START_LEN = 10, LINESIZE = 1024;
+const static char  COMMENT_START[] = "#;", SEPARATOR[] = "=";
 
 struct app_t {
 	char * program_name;
@@ -30,15 +30,29 @@ void app_assert(bool clause, const char * msg)
 	}
 }
 
+#define ASSERT(clause) app_assert( clause, #clause )
+
+char* app_term_readline_from(FILE* stream) {
+	char * buf = (char*) malloc(LINESIZE), * res;
+	ASSERT(buf != NULL);
+	res = fgets(buf, LINESIZE, stream);
+	if(!res) free(buf);
+	return res;
+}
+
+char* app_term_readline() {
+	return app_term_readline_from(stdin);
+}
+
 app * app_new()
 {
 	app * this = (app*) malloc(sizeof(app));
-	app_assert( this != NULL, "app != NULL");
+	ASSERT(this != NULL);
 	memset(this, 0, sizeof(app));
 	this->len = START_LEN;
 	this->pos=0;
 	this->options = (opt*) malloc(START_LEN*sizeof(opt));
-	app_assert(this->options != NULL, "options != NULL");
+	ASSERT(this->options != NULL);
 	memset(this->options, 0, START_LEN*sizeof(opt));
 	return this;	
 }
@@ -85,14 +99,13 @@ void app_make_room_for_opt(app* theapp)
 	if (theapp->pos >= theapp->len-1) {
 		theapp->len*=2;
 		theapp->options = realloc(theapp->options, theapp->len * sizeof(opt));
-		app_assert(theapp->options != NULL, "options != NULL");
+		ASSERT(theapp->options != NULL);
 	}
 }
 
 void app_opt_add(app* theapp, opt* theopt)
 {
 	app_make_room_for_opt(theapp);
-	//theapp->options[theapp->pos++] = theopt;
 	memcpy(theapp->options + (theapp->pos++), theopt, sizeof(opt));
 }
 
@@ -109,7 +122,7 @@ void app_opt_add_help(app* this)
 	app_opt_add(this, &auto_help_opt);
 }
 
-void    app_opt_add_short(app* theapp, char optc, opt_type typ, void * v)
+void app_opt_add_short(app* theapp, char optc, opt_type typ, void * v)
 {
 	opt * shopt = (opt*) malloc(sizeof(opt));
 	shopt->short_name = optc;
@@ -145,10 +158,19 @@ void app_wipe(char * opt)
 	memset(opt, 0, strlen(opt));
 }
 
-bool    app_parse_opts(app * theapp, int argc, char* argv[])
+bool app_compare_opt(const char * arg, const opt * curopt)
+{
+	bool is_short = (arg[1]!='-');
+	return ( is_short ?
+		curopt->short_name == arg[1] && !arg[2] :
+		curopt->long_name && !strcmp(curopt->long_name, arg+2)
+	);                                            
+}
+
+bool app_parse_opts(app * theapp, int argc, char* argv[])
 {
 	int i=1, last_opt=0, pos;
-	bool is_short, found;
+	bool found;
 	opt * curopt;
 	app_callback cb;
 	
@@ -160,17 +182,11 @@ bool    app_parse_opts(app * theapp, int argc, char* argv[])
 		if( i >= argc ) break;
 		last_opt = i;
 		
-		//short or long opt?
-		is_short = (argv[i][1]!='-');
-		
 		//search for opt
 		found = false; pos = 0;
 		while(pos < theapp->pos && ! found) {
 			curopt = theapp->options + pos;
-			found = ( is_short ? 
-				curopt->short_name == argv[i][1] && !argv[i][2] :
-				curopt->long_name && !strcmp(curopt->long_name, argv[i]+2)
-			);
+			found = app_compare_opt(argv[i], curopt);
 			if(!found) ++pos;
 		}
 		
@@ -213,6 +229,94 @@ bool    app_parse_opts(app * theapp, int argc, char* argv[])
 				break;
 		}
 		++i;
+	}
+	return true;
+}
+
+void trim(char *s) {
+        if (!s) return;
+    char *p = s;
+    int l = strlen(p);
+
+    while(isspace(p[l - 1])) p[--l] = 0;
+    while(* p && isspace(* p)) ++p, --l;
+
+    memmove(s, p, l + 1);
+}
+
+void app_split_line(char * line, char **key, char **val)
+{
+	char * tms;
+	*key = strtok_r(line, SEPARATOR, &tms); trim(*key);
+	*val = strtok_r(NULL, SEPARATOR, &tms); trim(*val);
+}
+
+bool app_parse_opts_from(app * theapp, FILE * file)
+{
+	int i=1, last_opt=0, pos;
+	bool found;
+	opt * curopt;
+	app_callback cb;
+	char * line;
+	char * key = NULL, * val = NULL;
+	
+	while( line = app_term_readline_from(file) ) {
+		if(strchr(COMMENT_START, line[0]) || !strlen(line)) {
+			free(line);
+			continue;
+		}
+		app_split_line(line, &key, &val);
+				
+		//search for opt
+		found = false; pos = 0;
+		if( key ) while(pos < theapp->pos && ! found) {
+			curopt = theapp->options + pos;
+			found = curopt->long_name && !strcmp(key, curopt->long_name);
+			if(!found) ++pos;
+		}
+
+		//handle opt
+		if(!found) {
+			if(theapp->on_error) theapp->on_error(theapp, key);
+			free(line);
+			return false;
+		}
+		switch(curopt->type) {
+			case OPT_FLAG: 
+				*(bool*)curopt->val = true;
+				break;
+			case OPT_INT:
+				if(!val) {
+					app_arg_required(theapp, key);
+					free(line);
+					return false;
+				}
+				*(int*)curopt->val = atoi(val);
+				break;
+			case OPT_STRING:
+				if(!val) {
+					app_arg_required(theapp, key);
+					free(line);
+					return false;
+				}
+				*(char**)curopt->val = val;
+				break;
+			case OPT_PASSWD:
+				if(!val) {
+					app_arg_required(theapp, key);
+					free(line);
+					return false;
+				}
+				*(char**)curopt->val = val;
+				break;
+			case OPT_CALLBACK:
+				cb = (app_callback)curopt->val;
+				cb(theapp, key);
+				break;
+			default:
+				break;
+		}
+		free(line); 
 	}
 	return true;
 }

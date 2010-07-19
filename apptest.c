@@ -1,12 +1,15 @@
 #include "app.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 void main(int argc, char* argv[])
 {
 	bool long_flag = false, res=false;
 	int verbose = 0;
 	char *str=NULL, *pass=NULL;
+	struct stat st;
+	FILE * config;
 	
 	opt longopt = {
 		short_name: 'l',
@@ -48,9 +51,16 @@ void main(int argc, char* argv[])
 		exit(1);
 	}
 	
+	if(stat(str, &st)<0) {
+		fprintf(stderr, "ERROR: Can't stat file %s\n", str);
+	} else {
+		config = fopen(str, "r");
+		app_parse_opts_from(theapp, config);
+		fclose(config);
+	}
+	
 	printf("options: %d, %d, %d, %d, %d\n", 
 		flag_a, flag_b, flag_c, flag_d, flag_e);
 	printf("verbosity: %d\n", verbose);
 	if(!pass) pass = app_term_askpass("please insert the password: ");
-	printf("a string: %s and my secret password %s\n", str, pass);
 }

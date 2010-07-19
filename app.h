@@ -1,6 +1,8 @@
 #ifndef APP_H
 #define APP_H
 
+#include <stdio.h>
+
 /*
  * libapp: an utility library to simplify
  * common tasks in app development.
@@ -45,10 +47,15 @@ void	app_opt_add(app* theapp, opt* theopt);
 void	app_opt_add_short(app* theapp, char optc, opt_type type, void * val);
 void	app_opt_add_help(app* theapp);
 void	app_opt_on_error(app* theapp, app_callback error_handler);
-
 bool	app_parse_opts(app * theapp, int argc, char* argv[]);
+bool	app_parse_opts_from(app * theapp, FILE * stream);
+
 const char *	app_get_program_name(app * theapp);
+
+void app_assert(bool clause, const char * msg);
 
 void	app_term_set_echo(bool enable);
 char*	app_term_askpass(const char * prompt);
+char*	app_term_readline();
+char*   app_term_readline_from(FILE* stream);
 #endif //APP_H
