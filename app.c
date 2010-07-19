@@ -294,6 +294,7 @@ bool app_parse_opts_from(app * theapp, FILE * file)
 	char * key = NULL, * val = NULL;
 	
 	while( line = app_term_readline_from(file) ) {
+		trim(line);
 		if(strchr(COMMENT_START, line[0]) || !strlen(line)) {
 			free(line);
 			continue;
