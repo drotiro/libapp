@@ -11,19 +11,35 @@ const static int START_LEN = 10;
 struct app_t {
 	char * program_name;
 	char * description;
-	opt** options;
+	opt * options;
 	int len, pos;
 	app_callback on_error;
 };
 
+void app_die(const char * msg)
+{
+	fprintf(stderr,"%s\n", msg);
+	exit(-1);
+}
+
+void app_assert(bool clause, const char * msg)
+{
+	if(!clause) {
+		fprintf(stderr,"Assertion failed: ");
+		app_die(msg);
+	}
+}
+
 app * app_new()
 {
 	app * this = (app*) malloc(sizeof(app));
+	app_assert( this != NULL, "app != NULL");
 	memset(this, 0, sizeof(app));
 	this->len = START_LEN;
 	this->pos=0;
-	this->options = (opt**) malloc(START_LEN*sizeof(opt*));
-	memset(this->options, 0, START_LEN*sizeof(opt*));
+	this->options = (opt*) malloc(START_LEN*sizeof(opt));
+	app_assert(this->options != NULL, "options != NULL");
+	memset(this->options, 0, START_LEN*sizeof(opt));
 	return this;	
 }
 
@@ -61,21 +77,23 @@ void app_auto_help(app* this, const char* theopt)
 	fprintf(stderr, "Usage: %s <options>\nOptions:\n", this->program_name);
 	
 	//list available options
-	for(i=0; i<this->pos; ++i) opt_display(this->options[i]);
+	for(i=0; i<this->pos; ++i) opt_display(this->options+i);
 }
 
 void app_make_room_for_opt(app* theapp)
 {
 	if (theapp->pos >= theapp->len-1) {
 		theapp->len*=2;
-		theapp->options = realloc(theapp->options, theapp->len * sizeof(opt*));
+		theapp->options = realloc(theapp->options, theapp->len * sizeof(opt));
+		app_assert(theapp->options != NULL, "options != NULL");
 	}
 }
 
 void app_opt_add(app* theapp, opt* theopt)
 {
 	app_make_room_for_opt(theapp);
-	theapp->options[theapp->pos++] = theopt;
+	//theapp->options[theapp->pos++] = theopt;
+	memcpy(theapp->options + (theapp->pos++), theopt, sizeof(opt));
 }
 
 static opt auto_help_opt = {
@@ -99,6 +117,7 @@ void    app_opt_add_short(app* theapp, char optc, opt_type typ, void * v)
 	shopt->val = v;
 	shopt->description = NULL;
 	app_opt_add (theapp,  shopt);
+	free(shopt);
 }
 
 void app_opt_on_error(app* theapp, app_callback error_handler)
@@ -147,9 +166,10 @@ bool    app_parse_opts(app * theapp, int argc, char* argv[])
 		//search for opt
 		found = false; pos = 0;
 		while(pos < theapp->pos && ! found) {
+			curopt = theapp->options + pos;
 			found = ( is_short ? 
-				theapp->options[pos]->short_name == argv[i][1] && !argv[i][2] :
-				theapp->options[pos]->long_name && !strcmp(theapp->options[pos]->long_name, argv[i]+2)
+				curopt->short_name == argv[i][1] && !argv[i][2] :
+				curopt->long_name && !strcmp(curopt->long_name, argv[i]+2)
 			);
 			if(!found) ++pos;
 		}
@@ -159,7 +179,6 @@ bool    app_parse_opts(app * theapp, int argc, char* argv[])
 			if(theapp->on_error) theapp->on_error(theapp, argv[i]);
 			return false;
 		}
-		curopt = theapp->options[pos];
 		switch(curopt->type) {
 			case OPT_FLAG: 
 				*(bool*)curopt->val = true;
