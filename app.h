@@ -51,6 +51,7 @@ bool	app_parse_opts(app * theapp, int argc, char* argv[]);
 bool	app_parse_opts_from(app * theapp, FILE * stream);
 
 const char *	app_get_program_name(app * theapp);
+void	app_set_description(app * theapp, const char * desc);
 
 void app_assert(bool clause, const char * msg);
 

@@ -63,6 +63,7 @@ void app_free(app *this)
 {
 	if(!this) return;
 	free(this->options);
+	if(this->description) free(this->description);
 	free(this);
 }
 
@@ -142,7 +143,7 @@ void app_opt_on_error(app* theapp, app_callback error_handler)
 
 void app_opt_default_error_handler(app* this, const char* theopt)
 {
-	fprintf(stderr, "ERROR: Wrong or invalid option '%s'\n\n", theopt);
+	fprintf(stderr, "\nERROR: Wrong or invalid option '%s'\n", theopt);
 	app_auto_help(this, theopt);
 }
 
@@ -151,13 +152,13 @@ app_callback app_help = &app_auto_help;
 
 void app_arg_required(app* this, const char * theopt)
 {
-	fprintf(stderr, "ERROR: Option '%s' requires an argument\n", theopt);
+	fprintf(stderr, "\nERROR: Option '%s' requires an argument\n", theopt);
 	this->on_error ? this->on_error(this, theopt) : app_auto_help(this, theopt);
 }
 
 void app_bad_value(app* this, const char * thekey, const char * theval)
 {
-	fprintf(stderr, "ERROR: Bad value '%s' for configuration key '%s'\n", theval, thekey);
+	fprintf(stderr, "\nERROR: Bad value '%s' for configuration key '%s'\n", theval, thekey);
 }
 
 void app_wipe(char * opt)
@@ -183,9 +184,7 @@ bool app_parse_opts(app * theapp, int argc, char* argv[])
 	app_callback cb;
 	
 	if(!argv) return false;
-	tmpn = strdup(argv[0]);
-	theapp->program_name = basename(tmpn);
-	free(tmpn);
+	theapp->program_name = basename(argv[0]);
 	while( i < argc ) {
 		//go to next opt, if not there
 		while( i < argc && argv[i][0] != '-' ) ++i;
@@ -399,4 +398,10 @@ const char * app_get_program_name(app * theapp)
 {
 	if(!theapp) return NULL;
 	return theapp->program_name;
+}
+
+void    app_set_description(app * theapp, const char * desc)
+{
+	if(theapp->description) free(theapp->description);
+	theapp->description = strdup(desc);
 }

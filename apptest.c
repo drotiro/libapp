@@ -39,6 +39,7 @@ void main(int argc, char* argv[])
 	app_opt_add(theapp, &intopt);
 	app_opt_add_short(theapp, 's', OPT_STRING, &str);
 	app_opt_add_short(theapp, 'p', OPT_PASSWD, &pass);
+	app_set_description(theapp, "A testing app for libapp");
 	
 	res = app_parse_opts(theapp, argc, argv);
 	if(!res) {
