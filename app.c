@@ -4,6 +4,7 @@
 #include <string.h>
 #include <libgen.h>
 #include <termios.h>
+#include <unistd.h>
 
 const static int START_LEN = 10, LINESIZE = 1024;
 const static char  COMMENT_START[] = "#;", SEPARATOR[] = "=";
@@ -404,4 +405,14 @@ void    app_set_description(app * theapp, const char * desc)
 {
 	if(theapp->description) free(theapp->description);
 	theapp->description = strdup(desc);
+}
+
+void app_daemonize()
+{
+	pid_t pid = fork();
+	if(pid<0) app_die("Unable to daemonize");
+	if(pid>0) exit(0);
+	freopen("/dev/null", "w", stdout);
+	freopen("/dev/null", "w", stderr);
+	freopen("/dev/null", "r", stdin);
 }

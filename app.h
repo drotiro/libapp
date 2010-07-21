@@ -59,4 +59,6 @@ void	app_term_set_echo(bool enable);
 char*	app_term_askpass(const char * prompt);
 char*	app_term_readline();
 char*   app_term_readline_from(FILE* stream);
+
+void	app_daemonize();
 #endif //APP_H

@@ -68,4 +68,8 @@ void main(int argc, char* argv[])
 		flag_a, flag_b, flag_c, flag_d, flag_e);
 	printf("verbosity: %d\n", verbose);
 	if(!pass) pass = app_term_askpass("please insert the password: ");
+	
+	app_daemonize();
+	//from now on, we're in bg
+	printf("are in connected to stdout?\n");
 }
