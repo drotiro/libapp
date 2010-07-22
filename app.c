@@ -193,6 +193,12 @@ void    app_opt_add_int(app* theapp, char optc, int * val)
 	app_opt_add_short(theapp, optc, OPT_INT, val);
 }
 
+void    app_opts_add(app* theapp, opt opts[], int len)
+{
+	int i;
+	for(i=0; i<len; ++i) app_opt_add(theapp, &opts[i]);
+}
+
 
 bool app_parse_opts(app * theapp, int argc, char* argv[])
 {

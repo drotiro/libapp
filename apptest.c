@@ -11,19 +11,12 @@ void main(int argc, char* argv[])
 	struct stat st;
 	FILE * config;
 	
-	opt longopt = {
-		short_name: 'l',
-		long_name: "long",
-		type: OPT_FLAG,
-		val: &long_flag,
-		description: NULL
-	}, intopt = {
-		short_name: 'v',
-		long_name: "verbosity",
-		type: OPT_INT,
-		val: &verbose,
-		description: "level (sets the verbosity level)"
+	opt myopts[] = {
+		{ 'l', "long", OPT_FLAG, val: &long_flag, NULL },
+		{ 'v', "verbosity", type: OPT_INT, val: &verbose, "level (sets the verbosity level)"},
+		{ 's', NULL, type: OPT_STRING, val: &str, NULL}
 	};
+
 	bool flag_a, flag_b, flag_c, flag_d, flag_e;
 	flag_a = flag_b = flag_c = flag_d = flag_e = false;
 
@@ -35,9 +28,7 @@ void main(int argc, char* argv[])
 	app_opt_add_flag(theapp, 'c', &flag_c);
 	app_opt_add_flag(theapp, 'd', &flag_d);
 	app_opt_add_flag(theapp, 'e', &flag_e);
-	app_opt_add(theapp, &longopt);
-	app_opt_add(theapp, &intopt);
-	app_opt_add_short(theapp, 's', OPT_STRING, &str);
+	app_opts_add(theapp, myopts, 3);
 	app_opt_add_short(theapp, 'p', OPT_PASSWD, &pass);
 	app_set_description(theapp, "A testing app for libapp");
 	
