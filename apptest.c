@@ -12,10 +12,10 @@ void main(int argc, char* argv[])
 	FILE * config;
 	
 	opt myopts[] = {
-		{ 'l', "long", OPT_FLAG, val: &long_flag, NULL },
-		{ 'v', "verbosity", type: OPT_INT, val: &verbose, "level (sets the verbosity level)"},
-		{ 'f', "file", type: OPT_STRING, val: &str, "config_file (reads configuration from file config_file)"},
-		{ 'p', NULL, type: OPT_PASSWD, val: &pass, NULL}
+		{ 'l', "long", OPT_FLAG, &long_flag, NULL },
+		{ 'v', "verbosity", OPT_INT, &verbose, "level (sets the verbosity level)"},
+		{ 'f', "file", OPT_STRING, &str, "config_file (reads configuration from file config_file)"},
+		{ 'p', NULL, OPT_PASSWD, &pass, NULL}
 	};
 
 	bool flag_a, flag_b, flag_c, flag_d, flag_e;

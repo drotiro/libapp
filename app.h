@@ -28,9 +28,7 @@ typedef enum {
 typedef struct {
 	char short_name;
 	char * long_name;
-	char * desc;
 	opt_type type;
-	bool is_mandatory;
 	void * val;
 	char * description;
 } opt;
