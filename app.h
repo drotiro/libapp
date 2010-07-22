@@ -36,8 +36,8 @@ typedef struct {
 } opt;
 
 typedef void (*app_callback)( app*, const char* );
-/* Generic help and error handler functions */
-extern app_callback app_opt_error_handler, app_help;
+/* Auto help function */
+extern app_callback app_help;
 
 /* Functions */
 app*	app_new();

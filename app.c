@@ -142,13 +142,6 @@ void app_opt_on_error(app* theapp, app_callback error_handler)
 	theapp->on_error = error_handler;
 }
 
-void app_opt_default_error_handler(app* this, const char* theopt)
-{
-	fprintf(stderr, "\nERROR: Wrong or invalid option '%s'\n", theopt);
-	app_auto_help(this, theopt);
-}
-
-app_callback app_opt_error_handler = &app_opt_default_error_handler;
 app_callback app_help = &app_auto_help;
 
 void app_arg_required(app* this, const char * theopt)
@@ -199,6 +192,11 @@ void    app_opts_add(app* theapp, opt opts[], int len)
 	for(i=0; i<len; ++i) app_opt_add(theapp, &opts[i]);
 }
 
+void app_bad_arg(app * theapp, const char * arg)
+{
+	fprintf(stderr, "\nERROR: Invalid option '%s'\n", arg);	
+	if(theapp->on_error) theapp->on_error(theapp, arg);
+}
 
 bool app_parse_opts(app * theapp, int argc, char* argv[])
 {
@@ -214,7 +212,6 @@ bool app_parse_opts(app * theapp, int argc, char* argv[])
 		//go to next opt, if not there
 		while( i < argc && argv[i][0] != '-' ) ++i;
 		if( i >= argc ) break;
-		last_opt = i;
 		
 		//search for opt
 		found = false; pos = 0;
@@ -226,7 +223,7 @@ bool app_parse_opts(app * theapp, int argc, char* argv[])
 		
 		//handle opt
 		if(!found) {
-			if(theapp->on_error) theapp->on_error(theapp, argv[i]);
+			app_bad_arg(theapp, argv[i]);
 			return false;
 		}
 		switch(curopt->type) {
@@ -262,6 +259,7 @@ bool app_parse_opts(app * theapp, int argc, char* argv[])
 			default:
 				break;
 		}
+		last_opt = i;
 		++i;
 	}
 	return true;
