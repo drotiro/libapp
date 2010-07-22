@@ -14,7 +14,7 @@ void main(int argc, char* argv[])
 	opt myopts[] = {
 		{ 'l', "long", OPT_FLAG, val: &long_flag, NULL },
 		{ 'v', "verbosity", type: OPT_INT, val: &verbose, "level (sets the verbosity level)"},
-		{ 's', NULL, type: OPT_STRING, val: &str, NULL},
+		{ 'f', "file", type: OPT_STRING, val: &str, "config_file (reads configuration from file config_file)"},
 		{ 'p', NULL, type: OPT_PASSWD, val: &pass, NULL}
 	};
 
@@ -32,18 +32,13 @@ void main(int argc, char* argv[])
 	app_opts_add(theapp, myopts, 4);
 	app_set_description(theapp, "A testing app for libapp");
 	
-	res = app_parse_opts(theapp, argc, argv);
-
+	res = app_parse_opts(theapp, &argc, &argv);
 	if(!res) exit(1);
-	if(!str) {
-		fprintf(stderr,"Option '-s' is required!\n");
-		app_help(theapp, NULL);
-		exit(1);
+	if(argc) {
+		printf("remaining arguments: %d (%s%s)\n",argc, argv[0], argc > 1 ? " ... " : "" );
 	}
-	
-	if(stat(str, &st)<0) {
-		fprintf(stderr, "Can't stat file %s\n", str);
-	} else {
+
+	if(str && stat(str, &st)==0) {
 		config = fopen(str, "r");
 		res = app_parse_opts_from(theapp, config);
 		fclose(config);

@@ -54,7 +54,7 @@ void    app_opt_add_int(app* theapp, char optc, int * val);
 void	app_opt_add_help(app* theapp);
 void	app_opt_on_error(app* theapp, app_callback error_handler);
 
-bool	app_parse_opts(app * theapp, int argc, char* argv[]);
+bool	app_parse_opts(app * theapp, int *argc, char** argv[]);
 bool	app_parse_opts_from(app * theapp, FILE * stream);
 
 const char *	app_get_program_name(app * theapp);

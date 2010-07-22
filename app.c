@@ -198,13 +198,15 @@ void app_bad_arg(app * theapp, const char * arg)
 	if(theapp->on_error) theapp->on_error(theapp, arg);
 }
 
-bool app_parse_opts(app * theapp, int argc, char* argv[])
+bool app_parse_opts(app * theapp, int * pargc, char** pargv[])
 {
 	int i=1, last_opt=0, pos;
 	bool found;
 	char * tmpn;
 	opt * curopt;
 	app_callback cb;
+	int argc = *pargc;
+	char ** argv = *pargv;
 	
 	if(!argv) return false;
 	theapp->program_name = basename(argv[0]);
@@ -262,6 +264,10 @@ bool app_parse_opts(app * theapp, int argc, char* argv[])
 		last_opt = i;
 		++i;
 	}
+
+	++last_opt;
+	*pargv += last_opt;
+	*pargc -= last_opt;
 	return true;
 }
 
