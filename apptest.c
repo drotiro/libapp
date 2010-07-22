@@ -30,11 +30,11 @@ void main(int argc, char* argv[])
 	app * theapp = app_new();
 	app_opt_add_help(theapp);
 	app_opt_on_error(theapp, app_opt_error_handler);
-	app_opt_add_short(theapp, 'a', OPT_FLAG, &flag_a);
-	app_opt_add_short(theapp, 'b', OPT_FLAG, &flag_b);
-	app_opt_add_short(theapp, 'c', OPT_FLAG, &flag_c);
-	app_opt_add_short(theapp, 'd', OPT_FLAG, &flag_d);
-	app_opt_add_short(theapp, 'e', OPT_FLAG, &flag_e);
+	app_opt_add_flag(theapp, 'a', &flag_a);
+	app_opt_add_flag(theapp, 'b', &flag_b);
+	app_opt_add_flag(theapp, 'c', &flag_c);
+	app_opt_add_flag(theapp, 'd', &flag_d);
+	app_opt_add_flag(theapp, 'e', &flag_e);
 	app_opt_add(theapp, &longopt);
 	app_opt_add(theapp, &intopt);
 	app_opt_add_short(theapp, 's', OPT_STRING, &str);

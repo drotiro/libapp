@@ -176,6 +176,24 @@ bool app_compare_opt(const char * arg, const opt * curopt)
 	);                                            
 }
 
+void    app_opt_add_flag(app* theapp, char optc, bool * val)
+{
+	app_opt_add_short(theapp, optc, OPT_FLAG, val);
+}
+void    app_opt_add_string(app* theapp, char optc, char ** val)
+{
+	app_opt_add_short(theapp, optc, OPT_STRING, val);
+}
+void    app_opt_add_pass(app* theapp, char optc, char ** val)
+{
+	app_opt_add_short(theapp, optc, OPT_PASSWD, val);
+}
+void    app_opt_add_int(app* theapp, char optc, int * val)
+{
+	app_opt_add_short(theapp, optc, OPT_INT, val);
+}
+
+
 bool app_parse_opts(app * theapp, int argc, char* argv[])
 {
 	int i=1, last_opt=0, pos;
