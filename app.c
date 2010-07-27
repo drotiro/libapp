@@ -377,7 +377,7 @@ bool app_parse_opts_from(app * theapp, FILE * file)
 					free(line);
 					return false;
 				}
-				*(char**)curopt->val = val;
+				*(char**)curopt->val = strdup(val);
 				break;
 			case OPT_PASSWD:
 				if(!val) {
@@ -385,7 +385,7 @@ bool app_parse_opts_from(app * theapp, FILE * file)
 					free(line);
 					return false;
 				}
-				*(char**)curopt->val = val;
+				*(char**)curopt->val = strdup(val);
 				break;
 			case OPT_CALLBACK:
 				cb = (app_callback)curopt->val;
@@ -394,7 +394,7 @@ bool app_parse_opts_from(app * theapp, FILE * file)
 			default:
 				break;
 		}
-		free(line); 
+		free(line);
 	}
 	return true;
 }

@@ -15,7 +15,7 @@ void main(int argc, char* argv[])
 		{ 'l', "long", OPT_FLAG, &long_flag, NULL },
 		{ 'v', "verbosity", OPT_INT, &verbose, "level (sets the verbosity level)"},
 		{ 'f', "file", OPT_STRING, &str, "config_file (reads configuration from file config_file)"},
-		{ 'p', NULL, OPT_PASSWD, &pass, NULL}
+		{ 'p', "password", OPT_PASSWD, &pass, NULL}
 	};
 
 	bool flag_a, flag_b, flag_c, flag_d, flag_e;
@@ -48,6 +48,7 @@ void main(int argc, char* argv[])
 	printf("options: %d, %d, %d, %d, %d\n", 
 		flag_a, flag_b, flag_c, flag_d, flag_e);
 	printf("verbosity: %d\n", verbose);
+	printf("%s, %s\n", str, pass);
 	if(!pass) pass = app_term_askpass("please insert the password: ");
 	
 	app_daemonize();
