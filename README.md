@@ -1,5 +1,5 @@
-	libapp: utilities for repetitive tasks in app development
-	=========================================================
+libapp: utilities for repetitive tasks in app development
+=========================================================
 
 libapp provides functions to easily perform some often needed
 operations in application development, such as command line parsing.
@@ -7,8 +7,9 @@ operations in application development, such as command line parsing.
 Resources
 ---------
 
-libapp is hosted at GitHub <http://github.com/drotiro/libapp>.
-There you can find all the code releases and the project Wiki.
+libapp is hosted at [GitHub](http://github.com/drotiro/libapp).
+
+There you can find all the code releases and the project [Wiki](http://github.com/drotiro/libapp/wiki).
 
 
 Copyright and license
