@@ -20,10 +20,12 @@ typedef enum {
 	OPT_CALLBACK
 } opt_type;
 
+#ifndef __cplusplus
 typedef enum {
 	false = 0,
 	true = 1
 } bool;
+#endif
 
 typedef struct {
 	char short_name;
