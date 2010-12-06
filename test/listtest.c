@@ -34,15 +34,15 @@ void main(int argc, char* argv[])
 	list_free(l);
 	
 	//string list test
-	l = list_new(free);
-	for(i=0; i<8; ++i) list_append(l, sv[i]);
-	list_prepend(l, "nine");
+	l = list_new_full(free);
+	for(i=0; i<8; ++i) list_append(l, strdup(sv[i]));
+	list_prepend(l, strdup("nine"));
 	list_delete_item_comp(l, strdup("seven"), (list_comparator)strcmp);
 	list_delete_item_comp(l, "eee", (list_comparator)strcmp);
 	list_dump(l, "%s\n");
 	list_free(l);
 	
-	l = list_new(free);
+	l = list_new();
 	for(i=0; i<8; ++i) list_insert_sorted_comp(l, sv[i], (list_comparator)strcmp);
 	list_dump(l, "%s\n");
 	list_free(l);
