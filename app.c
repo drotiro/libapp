@@ -116,6 +116,7 @@ void app_opt_add_help(app* this)
 	app_opt_add(this, &auto_help_opt);
 }
 
+/*
 void app_opt_add_short(app* theapp, char optc, opt_type typ, void * v)
 {
 	opt * shopt = (opt*) malloc(sizeof(opt));
@@ -126,7 +127,7 @@ void app_opt_add_short(app* theapp, char optc, opt_type typ, void * v)
 	app_opt_add (theapp,  shopt);
 	free(shopt);
 }
-
+*/
 void app_opt_on_error(app* theapp, app_callback error_handler)
 {
 	theapp->on_error = error_handler;
@@ -158,7 +159,7 @@ bool app_compare_opt(const char * arg, const opt * curopt)
 		curopt->long_name && !strcmp(curopt->long_name, arg+2)
 	);                                            
 }
-
+/*
 void    app_opt_add_flag(app* theapp, char optc, bool * val)
 {
 	app_opt_add_short(theapp, optc, OPT_FLAG, val);
@@ -175,7 +176,7 @@ void    app_opt_add_int(app* theapp, char optc, int * val)
 {
 	app_opt_add_short(theapp, optc, OPT_INT, val);
 }
-
+*/
 void    app_opts_add(app* theapp, opt opts[], int len)
 {
 	int i;

@@ -13,25 +13,25 @@ void main(int argc, char* argv[])
 	
 	//app test
 	
-	opt myopts[] = {
-		{ 'l', "long", OPT_FLAG, &long_flag, NULL },
-		{ 'v', "verbosity", OPT_INT, &verbose, "level (sets the verbosity level)"},
-		{ 'f', "file", OPT_STRING, &str, "config_file (reads configuration from file config_file)"},
-		{ 'p', "password", OPT_PASSWD, &pass, NULL}
-	};
+	bool flag_a, flag_b, flag_c, flag_d;
+	flag_a = flag_b = flag_c = flag_d = false;
 
-	bool flag_a, flag_b, flag_c, flag_d, flag_e;
-	flag_a = flag_b = flag_c = flag_d = flag_e = false;
+	opt myopts[] = {
+	/*   SHRT, LONG,       TYPE,       DEST,       DESC */
+		{ 'l', "long",     OPT_FLAG,   &long_flag, NULL },
+		{ 'v', "verbose",  OPT_INT,    &verbose,   "level (sets the verbosity level)"},
+		{ 'f', "file",     OPT_STRING, &str, "config_file (reads configuration from file config_file)"},
+		{ 'p', "password", OPT_PASSWD, &pass},
+		{ 'a', NULL,       OPT_FLAG,   &flag_a},
+		{ 'b', NULL,       OPT_FLAG,   &flag_b},
+		{ 'c', NULL,       OPT_FLAG,   &flag_c},
+		{ 'd', NULL,       OPT_FLAG,   &flag_d},
+	};
 
 	app * theapp = app_new();
 	app_opt_add_help(theapp);
 	app_opt_on_error(theapp, app_help);
-	app_opt_add_flag(theapp, 'a', &flag_a);
-	app_opt_add_flag(theapp, 'b', &flag_b);
-	app_opt_add_flag(theapp, 'c', &flag_c);
-	app_opt_add_flag(theapp, 'd', &flag_d);
-	app_opt_add_flag(theapp, 'e', &flag_e);
-	app_opts_add(theapp, myopts, 4);
+	app_opts_add(theapp, myopts, sizeof(myopts)/sizeof(myopts[0]));
 	app_set_description(theapp, "A testing app for libapp");
 	
 	res = app_parse_opts(theapp, &argc, &argv);
@@ -47,8 +47,8 @@ void main(int argc, char* argv[])
 		if(!res) exit(1);
 	}
 	
-	printf("options: %d, %d, %d, %d, %d\n", 
-		flag_a, flag_b, flag_c, flag_d, flag_e);
+	printf("options: %d, %d, %d, %d\n", 
+		flag_a, flag_b, flag_c, flag_d);
 	printf("verbosity: %d\n", verbose);
 	printf("%s, %s\n", str, pass);
 	if(!pass) pass = app_term_askpass("please insert the password: ");
