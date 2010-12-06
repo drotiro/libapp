@@ -15,6 +15,7 @@
 
 typedef struct node_t node;
 typedef void (*list_deallocator)(void * data);
+typedef int (*list_comparator)(void * a, void *b);
 typedef struct list_t list;
 
 typedef node * list_iter;
@@ -26,10 +27,13 @@ void       list_free(list * l);
 void       list_append(list * l, void * item);
 void       list_prepend(list * l, void * item);
 void       list_insert_at(list * l, void * item, int at);
+void       list_insert_sorted(list *l, void * item);
+void       list_insert_sorted_comp(list *l, void * item, list_comparator lc);
 
 void       list_delete_first(list *l);
 void       list_delete_at(list * l, int at);
 bool       list_delete_item(list * l, void * item);
+bool       list_delete_item_comp(list *l, void * item, list_comparator lc);
 
 int        list_size(list * l);
 

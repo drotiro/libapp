@@ -4,7 +4,6 @@ OBJS=app.o list.o
 HEADERS=app.h list.h base.h
 CFLAGS=-g -fPIC -I..
 CFLAGS_T=-g -fPIC -I../..
-LDFLAGS_T=-L.. -lapp
 SONAME=libapp.so
 PREFIX=/usr/local
 INCDIR=$(PREFIX)/include/libapp
@@ -38,10 +37,10 @@ install: $(SONAME)
 install_debug: $(SONAME)
 	install $(SONAME).$(VER) $(PREFIX)/lib
 
-test: $(TESTS)
+test: $(SONAME) $(TESTS)
 
 apptest: test/apptest.o
-	gcc $(CFLAGS) -o $@ $< $(LDFLAGS_T)
+	gcc $(CFLAGS) -o $@ $< -lapp
 
 listtest: test/listtest.o
-	gcc $(CFLAGS) -o $@ $< $(LDFLAGS_T)
+	gcc $(CFLAGS) -o $@ $< -lapp

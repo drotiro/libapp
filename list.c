@@ -39,6 +39,12 @@ void    node_free(list * l, node * n)
 	free(n);
 }
 
+int pointer_comparator(void * a, void *b)
+{
+	if (a<b) return -1;
+	return (a==b ? 0 : 1);
+}
+
 list *   list_new() { return list_new_full(NULL); }
 list *   list_new_full(list_deallocator dealloc)
 {
@@ -99,6 +105,30 @@ void       list_insert_at(list * l, void * item, int at)
 	l->size++;
 }
 
+void       list_insert_sorted(list *l, void * item)
+{
+	list_insert_sorted_comp(l, item, pointer_comparator);
+}
+void       list_insert_sorted_comp(list *l, void * item, list_comparator lc)
+{
+	list_iter it;
+	node * n;
+	
+	if(l->size==0) return list_prepend(l, item);
+	if(lc(item, l->first->data)<=0) return list_prepend(l, item);
+
+	it = list_get_iter(l);
+	while(it->next) {
+		if(lc(item,it->next->data)<=0) break;
+		it = list_iter_next(it);
+	}
+    n = node_new(item);
+    n->next = it->next;
+    it->next = n;
+    if(n->next==NULL) l->last=n;
+    l->size++;            
+}
+
 void       list_delete_first(list *l)
 {
 	node * n;
@@ -133,19 +163,24 @@ void       list_delete_at(list * l, int at)
 
 bool       list_delete_item(list * l, void * item)
 {
+	return list_delete_item_comp(l, item, pointer_comparator);
+}
+
+bool       list_delete_item_comp(list *l, void * item, list_comparator lc)
+{
 	list_iter it;
 	
 	if(l->size==0) return false;
-	if(item==l->first->data) {
+	if(lc(item,l->first->data)==0) {
 		list_delete_first(l);
 		return true;
 	}
 	it = list_get_iter(l);
-	while(it) {
-		if(item==it->next->data) break;
+	while(it->next) {
+		if(lc(item,it->next->data)==0) break;
 		it = list_iter_next(it);
 	}
-	if(it) {
+	if(it->next) {
 		list_delete_node(l, it);
 		return true;
 	}
