@@ -25,19 +25,9 @@ void app_die(const char * msg)
 	exit(-1);
 }
 
-void app_assert(bool clause, const char * msg)
-{
-	if(!clause) {
-		fprintf(stderr,"Assertion failed: ");
-		app_die(msg);
-	}
-}
-
-#define ASSERT(clause) app_assert( clause, #clause )
-
 char* app_term_readline_from(FILE* stream) {
 	char * buf = (char*) malloc(LINESIZE), * res;
-	ASSERT(buf != NULL);
+	ASSERT(buf);
 	res = fgets(buf, LINESIZE, stream);
 	if(!res) free(buf);
 	return res;
@@ -50,12 +40,12 @@ char* app_term_readline() {
 app * app_new()
 {
 	app * this = (app*) malloc(sizeof(app));
-	ASSERT(this != NULL);
+	ASSERT(this);
 	memset(this, 0, sizeof(app));
 	this->len = START_LEN;
 	this->pos=0;
 	this->options = (opt*) malloc(START_LEN*sizeof(opt));
-	ASSERT(this->options != NULL);
+	ASSERT(this->options);
 	memset(this->options, 0, START_LEN*sizeof(opt));
 	return this;	
 }
@@ -103,7 +93,7 @@ void app_make_room_for_opt(app* theapp)
 	if (theapp->pos >= theapp->len-1) {
 		theapp->len*=2;
 		theapp->options = realloc(theapp->options, theapp->len * sizeof(opt));
-		ASSERT(theapp->options != NULL);
+		ASSERT(theapp->options);
 	}
 }
 

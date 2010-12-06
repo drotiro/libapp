@@ -1,6 +1,7 @@
 #ifndef APP_H
 #define APP_H
 
+#include <libapp/base.h>
 #include <stdio.h>
 
 /*
@@ -19,13 +20,6 @@ typedef enum {
 	OPT_INT,
 	OPT_CALLBACK
 } opt_type;
-
-#ifndef __cplusplus
-typedef enum {
-	false = 0,
-	true = 1
-} bool;
-#endif
 
 typedef struct {
 	char short_name;
@@ -59,8 +53,6 @@ bool	app_parse_opts_from(app * theapp, FILE * stream);
 
 const char *	app_get_program_name(app * theapp);
 void	app_set_description(app * theapp, const char * desc);
-
-void app_assert(bool clause, const char * msg);
 
 void	app_term_set_echo(bool enable);
 char*	app_term_askpass(const char * prompt);

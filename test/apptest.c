@@ -1,4 +1,4 @@
-#include "app.h"
+#include "../app.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -10,6 +10,8 @@ void main(int argc, char* argv[])
 	char *str=NULL, *pass=NULL;
 	struct stat st;
 	FILE * config;
+	
+	//app test
 	
 	opt myopts[] = {
 		{ 'l', "long", OPT_FLAG, &long_flag, NULL },
@@ -50,7 +52,7 @@ void main(int argc, char* argv[])
 	printf("verbosity: %d\n", verbose);
 	printf("%s, %s\n", str, pass);
 	if(!pass) pass = app_term_askpass("please insert the password: ");
-	
+
 	app_daemonize();
 	//from now on, we're in bg
 	printf("are we connected to stdout? (we shouldn't...)\n");
