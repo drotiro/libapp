@@ -1,5 +1,5 @@
 # Variables
-VER=0.1.0
+VER=0.2.0
 OBJS=app.o list.o
 HEADERS=app.h list.h base.h
 CFLAGS=-g -fPIC -I..
