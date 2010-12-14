@@ -194,7 +194,8 @@ int        list_size(list * l)
 
 list_iter  list_get_iter(list * l)
 {
-	return l->first;
+	if(l) return l->first;
+	return NULL;
 }
 
 list_iter  list_iter_next(list_iter iter)
@@ -205,5 +206,6 @@ list_iter  list_iter_next(list_iter iter)
 
 void *     list_iter_getval(list_iter iter)
 {
-	return iter->data;
+	if(iter) return iter->data;
+	return NULL;
 }
