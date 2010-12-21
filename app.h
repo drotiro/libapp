@@ -39,13 +39,6 @@ void	app_free(app* theapp);
 
 void	app_opt_add(app* theapp, opt* theopt);
 void	app_opts_add(app* theapp, opt opts[], int len);
-/*
-void	app_opt_add_short(app* theapp, char optc, opt_type type, void * val);
-void	app_opt_add_flag(app* theapp, char optc, bool *val);
-void    app_opt_add_string(app* theapp, char optc, char ** val);
-void    app_opt_add_pass(app* theapp, char optc, char ** val);
-void    app_opt_add_int(app* theapp, char optc, int * val);
-*/
 void	app_opt_add_help(app* theapp);
 void	app_opt_on_error(app* theapp, app_callback error_handler);
 
