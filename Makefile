@@ -25,7 +25,7 @@ $(SONAME).$(VER):	$(OBJS)
 	gcc $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(SONAME).$(VER) *.o test/*.o $(TESTS)
+	rm -f $(SONAME).* *.o test/*.o $(TESTS)
 
 install: $(SONAME)
 	install -s $(SONAME).$(VER) $(LIBDIR)
