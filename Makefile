@@ -34,9 +34,6 @@ install: $(SONAME)
 
 	@echo "*** Note: you should probably run 'ldconfig'"
 
-install_debug: $(SONAME)
-	install $(SONAME).$(VER) $(PREFIX)/lib
-
 test: $(SONAME) $(TESTS)
 
 apptest: test/apptest.o
