@@ -1,0 +1,9 @@
+prefix=@PREFIX@
+libdir=@LIBDIR@
+includedir=@INCLUDEDIR@
+
+Name: @PACKAGE_NAME@
+Description: Common routines used by applications
+Version: @PACKAGE_VERSION@
+Libs: '-L${libdir}' -lapp
+Cflags: '-I${includedir}'
