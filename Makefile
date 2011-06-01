@@ -21,7 +21,7 @@ $(SONAME).$(VER):	$(OBJS)
 	$(CC) $(MY_CFLAGS) $(CFLAGS) $(LDFLAGS) -Wl,-soname=$(SONAME) -shared  -o $@ $(OBJS)
 
 .c.o:
-	$(CC) $(MY_CFLAGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(MY_CFLAGS) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(SONAME).* *.o test/*.o $(TESTS)
