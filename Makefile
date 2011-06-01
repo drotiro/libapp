@@ -27,10 +27,11 @@ clean:
 	rm -f $(SONAME).* *.o test/*.o $(TESTS)
 
 install: $(SONAME)
+	install -d $(LIBDIR)
 	install -s $(SONAME).$(VER) $(LIBDIR)
 	install -d $(INCDIR)
 	install -m 644 -t $(INCDIR) $(HEADERS)
-	
+
 	@echo "*** Note: you should probably run 'ldconfig'"
 
 install_debug: $(SONAME)
