@@ -5,7 +5,8 @@ HEADERS=app.h list.h base.h
 MY_CFLAGS=-g -fPIC -I..
 SONAME=libapp.so
 PREFIX=/usr/local
-INCDIR=$(PREFIX)/include/libapp
+INCDIR=$(PREFIX)/include
+INCAPPDIR=$(PREFIX)/include/libapp
 LIBDIR=$(PREFIX)/lib
 PKGCONFIGDIR=$(LIBDIR)/pkgconfig
 INSTALL_S = install -s
@@ -44,8 +45,8 @@ install: $(SONAME) libapp.pc
 	install -d '$(LIBDIR)'
 	$(INSTALL_S) -t '$(LIBDIR)' $(SONAME).$(VER)
 	$(LN_SF) $(SONAME).$(VER) '$(LIBDIR)'/$(SONAME)
-	install -d '$(INCDIR)'
-	install -m 644 -t '$(INCDIR)' $(HEADERS)
+	install -d '$(INCAPPDIR)'
+	install -m 644 -t '$(INCAPPDIR)' $(HEADERS)
 	install -d '$(PKGCONFIGDIR)'
 	install -t '$(PKGCONFIGDIR)' libapp.pc
 
