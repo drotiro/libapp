@@ -2,4 +2,5 @@
 libapp.so*
 apptest
 listtest
-
+libapp.pc
+*~
