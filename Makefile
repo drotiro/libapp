@@ -1,8 +1,8 @@
 # Variables
 VER=0.2.0
-OBJS=app.o list.o
+OBJS=libapp/app.o libapp/list.o
 HEADERS=app.h list.h base.h
-MY_CFLAGS=-g -fPIC -I..
+MY_CFLAGS=-g -fPIC -I.
 SONAME=libapp.so
 PREFIX=/usr/local
 INCDIR=$(PREFIX)/include
