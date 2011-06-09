@@ -1,8 +1,8 @@
 # Variables
 VER=0.2.0
-OBJS=app.o list.o
+OBJS=libapp/app.o libapp/list.o
 HEADERS=app.h list.h base.h
-MY_CFLAGS=-g -fPIC -I..
+MY_CFLAGS=-g -fPIC -I.
 SONAME=libapp.so
 PREFIX=/usr/local
 INCDIR=$(PREFIX)/include
@@ -17,6 +17,7 @@ TESTS=apptest listtest
 all: $(SONAME) libapp.pc
 
 $(SONAME): $(SONAME).$(VER)
+	$(LN_SF) $(SONAME).$(VER) $(SONAME)
 
 # Dependencies
 app.o: base.h app.h app.c
@@ -52,8 +53,8 @@ install: $(SONAME) libapp.pc
 
 test: $(SONAME) $(TESTS)
 
-apptest: test/apptest.o
-	$(CC) $(MY_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $< -lapp
+apptest: test/apptest.o $(SONAME)
+	$(CC) $(MY_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $< -L. -lapp
 
-listtest: test/listtest.o
-	$(CC) $(MY_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $< -lapp
+listtest: test/listtest.o $(SONAME)
+	$(CC) $(MY_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $< -L. -lapp

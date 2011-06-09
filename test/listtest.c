@@ -1,4 +1,5 @@
-#include "../list.h"
+#include "libapp/list.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,7 +19,7 @@ void main(int argc, char* argv[])
 {
 	list * l;
 	list_iter it;
-	int i;
+	intptr_t i;
 	char* sv[] = { "fff", "zzz", "rrr", "bbb", "ggg", "hhh", "lll", "ttt" };
 	
 	//list test
