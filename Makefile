@@ -17,6 +17,7 @@ TESTS=apptest listtest
 all: $(SONAME) libapp.pc
 
 $(SONAME): $(SONAME).$(VER)
+	$(LN_SF) $(SONAME).$(VER) $(SONAME)
 
 # Dependencies
 app.o: base.h app.h app.c
@@ -39,7 +40,7 @@ libapp.pc: libapp.pc.in
 		$< > $@
 
 clean:
-	rm -f $(SONAME).* libapp/*.o test/*.o *.pc $(TESTS)
+	rm -f $(SONAME)* libapp/*.o test/*.o *.pc $(TESTS)
 
 install: $(SONAME) libapp.pc
 	install -d '$(LIBDIR)'
