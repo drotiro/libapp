@@ -170,7 +170,7 @@ bool       list_delete_item_comp(list *l, void * item, list_comparator lc)
 {
 	list_iter it;
 	
-	if(l->size==0) return false;
+	if(!l || l->size==0) return false;
 	if(lc(item,l->first->data)==0) {
 		list_delete_first(l);
 		return true;

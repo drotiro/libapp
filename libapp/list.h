@@ -6,7 +6,7 @@
 /*
  * libapp: an utility library to simplify
  * common tasks in app development.
- * (C) 2010 - Domenico Rotiroti
+ * (C) 2010-2013 - Domenico Rotiroti
  * Licensed under the LGPL 3.0
  *
  * list.h: a very simple linked list that's actually usable

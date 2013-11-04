@@ -1,9 +1,9 @@
 # Variables
-OBJS=app.o list.o
+OBJS=app.o list.o tree.o
 MY_CFLAGS=-g -fPIC -I..
 
 # Main target
-all: $(SONAME)
+all: $(SONAME) check
 
 $(SONAME): $(SONAME).$(VER)
 	$(LN_SF) $(SONAME).$(VER) $(SONAME)
@@ -11,6 +11,7 @@ $(SONAME): $(SONAME).$(VER)
 # Dependencies
 app.o: base.h app.h app.c
 list.o: base.h list.h list.c
+tree.o: list.h tree.h tree.c
 
 $(SONAME).$(VER):	$(OBJS)
 	$(CC) $(MY_CFLAGS) $(CFLAGS) $(LDFLAGS) -Wl,-soname=$(SONAME) -shared  -o $@ $(OBJS)
@@ -18,5 +19,11 @@ $(SONAME).$(VER):	$(OBJS)
 .c.o:
 	$(CC) $(MY_CFLAGS) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
-clean:
+clean: check
 	rm -f $(SONAME) $(SONAME).$(VER) $(OBJS)
+
+check:
+ifndef SONAME
+	@echo "Please use the top-level Makefile"
+	@exit 1
+endif
