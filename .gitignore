@@ -1,5 +1,6 @@
 *.o
 libapp.so*
-test/*test
 libapp.pc
+libapp.a
+test/*test
 *~

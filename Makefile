@@ -1,6 +1,7 @@
 # Variables
 export VER=0.2.0
 export SONAME=libapp.so
+export ANAME=libapp.a
 PREFIX ?= /usr/local
 INCDIR=$(PREFIX)/include
 INCAPPDIR=$(PREFIX)/include/libapp
@@ -29,6 +30,7 @@ clean:
 
 install: all libapp.pc
 	install -d '$(LIBDIR)'
+	$(INSTALL_S) -t '$(LIBDIR)' libapp/$(ANAME)
 	$(INSTALL_S) -t '$(LIBDIR)' libapp/$(SONAME).$(VER)
 	$(LN_SF) $(SONAME).$(VER) '$(LIBDIR)'/$(SONAME)
 	install -d '$(INCAPPDIR)'
@@ -36,4 +38,4 @@ install: all libapp.pc
 	install -d '$(PKGCONFIGDIR)'
 	install -t '$(PKGCONFIGDIR)' libapp.pc
 
-.PHONY: clean install
+.PHONY: clean install all
