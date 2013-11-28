@@ -52,7 +52,7 @@ void *    tree_getval(tree * t)
 tree*      tree_insert(tree * parent, void * item)
 {
 	tree * t;
-	if(!parent) return;
+	if(!parent) return NULL;
 	t = tree_new(item);
 	t->parent = parent;
 	list_append(parent->children, t);
