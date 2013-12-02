@@ -17,7 +17,7 @@ list.o: base.h list.h list.c
 tree.o: list.h tree.h tree.c
 
 $(SONAME).$(VER): $(OBJS)
-	$(CC) $(MY_CFLAGS) $(CFLAGS) $(LDFLAGS) -Wl,-soname=$(SONAME) -shared  -o $@ $(OBJS)
+	$(CC) $(MY_CFLAGS) $(CFLAGS) $(LDFLAGS) -shared  -o $@ $(OBJS)
 
 $(ANAME): $(OBJS)
 	$(AR) rc $@ $+
