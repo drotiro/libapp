@@ -202,9 +202,11 @@ bool app_parse_opts(app * theapp, int * pargc, char** pargv[])
 	if(!argv) return false;
 	theapp->program_name = basename(argv[0]);
 	while( i < argc ) {
-		//go to next opt, if not there
+		/* go to next opt, if not there */
 		while( i < argc && argv[i][0] != '-' ) ++i;
 		if( i >= argc ) break;
+		/* use "--" to stop option parsing */
+		if( argv[i][1] == '-' ) break;
 		
 		//search for opt
 		found = false; pos = 0;
@@ -214,7 +216,7 @@ bool app_parse_opts(app * theapp, int * pargc, char** pargv[])
 			if(!found) ++pos;
 		}
 		
-		//handle opt
+		/* handle the option */
 		if(!found) {
 			app_bad_arg(theapp, argv[i]);
 			return false;
