@@ -34,6 +34,7 @@ char* app_term_readline_from(FILE* stream) {
 }
 
 char* app_term_readline() {
+    fflush(stdout);
 	return app_term_readline_from(stdin);
 }
 
@@ -409,6 +410,7 @@ char * app_term_askpass(const char * what)
 {
   char * val = malloc(512);
   printf("%s ",what);
+  fflush(stdout);
   app_term_set_echo(0);
   scanf("%s",val);
   app_term_set_echo(1);
